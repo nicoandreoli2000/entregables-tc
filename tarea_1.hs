@@ -41,7 +41,13 @@ sust(Eval e es, s) = Eval (sust(e, s)) es
 sust(Case e t, s) = Case (sust(e, s)) (sustBsList(s, t))
 sust(Rec x e, s) = Rec x (sust(e, s))
 
-
+eval :: (Exp) -> Exp
+eval(Var x) = Var x
+eval(Const c) = Const c
+eval(Lambda xs e) = Lambda xs e
+eval(Eval e es) = eval(e)
+eval(Case e t) = eval(e)
+eval(Rec x e) = Rec x e
 
 
 
