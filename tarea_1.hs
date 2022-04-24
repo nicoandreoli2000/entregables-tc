@@ -44,6 +44,9 @@ sust(Rec x e, s) = Rec x (sust(e, s))
 
 -- 3
 
+errorMessage :: String
+errorMessage = "La expresión no puede ser reducida"
+
 eval :: (Exp) -> Exp
 eval(Var x) = Var x
 eval(Const c) = Const c
@@ -55,12 +58,14 @@ eval(Rec x e) = eval(sust(e,[(x, Rec x e)]))
 evalAplic :: (Exp, [Exp]) -> Exp
 evalAplic(e, es) = case eval(e) of {
 	Lambda xs u -> case length(xs) /= length(es) of {
-		True -> error "La expresión no puede ser reducida";
+		True -> error errorMessage;
 		False -> eval(sust(u, zip xs (map eval es)));
 	};
-	_ -> e;
+	-- Aplic u us -> evalAplic(u, us ++ es);
+	-- Case u bs -> u;
+	_ -> error errorMessage;
 }
 
 evalCase :: (Exp, [Bs]) -> Exp
-evalCase(e, []) = eval(e)
-evalCase(e, (x, xs, e1):bs) = evalCase(e, bs)
+evalCase(e, bs) = e
+-- TODO caso ramas
