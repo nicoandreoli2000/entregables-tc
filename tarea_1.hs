@@ -8,7 +8,7 @@ import Prelude
 
 -- 1
 
-data Exp = Var String | Const String | Lambda [String] Exp | Eval Exp [Exp] | Case Exp [Bs] | Rec String Exp
+data Exp = Var String | Const String | Lambda [String] Exp | Aplic Exp [Exp] | Case Exp [Bs] | Rec String Exp
 	deriving Show
 
 type Bs = (String, [String], Exp)
@@ -37,17 +37,24 @@ sust :: (Exp, Sigma) -> Exp
 sust(Var x, s) = search(x,s)
 sust(Const c, s) = Const c
 sust(Lambda xs e, s) = Lambda xs (sust(e, erease(s, xs)))
-sust(Eval e es, s) = Eval (sust(e, s)) es
+sust(Aplic e es, s) = Aplic (sust(e, s)) es
 sust(Case e t, s) = Case (sust(e, s)) (sustBsList(s, t))
 sust(Rec x e, s) = Rec x (sust(e, s))
+
+
+-- 3
 
 eval :: (Exp) -> Exp
 eval(Var x) = Var x
 eval(Const c) = Const c
 eval(Lambda xs e) = Lambda xs e
-eval(Eval e es) = eval(e)
-eval(Case e t) = eval(e)
-eval(Rec x e) = Rec x e
+eval(Aplic e es) = evalAplic(e, es)
+eval(Case e t) = evalCase(e, t)
+eval(Rec x e) = eval(sust(e,[(x, Rec x e)]))
 
+evalAplic :: (Exp, [Exp]) -> Exp
+evalAplic(e, es) = eval(e)
 
-
+evalCase :: (Exp, [Bs]) -> Exp
+evalCase(e, []) = eval(e)
+evalCase(e, (x, xs, e1):bs) = evalCase(e, bs)
