@@ -53,7 +53,13 @@ eval(Case e t) = evalCase(e, t)
 eval(Rec x e) = eval(sust(e,[(x, Rec x e)]))
 
 evalAplic :: (Exp, [Exp]) -> Exp
-evalAplic(e, es) = eval(e)
+evalAplic(e, es) = case eval(e) of {
+	Lambda xs u -> case length(xs) /= length(es) of {
+		True -> error "La expresión no puede ser reducida";
+		False -> eval(sust(u, zip xs (map eval es)));
+	};
+	_ -> e;
+}
 
 evalCase :: (Exp, [Bs]) -> Exp
 evalCase(e, []) = eval(e)
