@@ -4,7 +4,7 @@
 
 module Chi where
 
-import Prelude
+import Prelude hiding (and)
 
 -- 1
 
@@ -80,3 +80,12 @@ findExpCase((x, xs, e):bs, c) = case x == c of {
 	False -> findExpCase(bs, c);
 	True -> (e, xs);
 }
+
+-- 4
+and :: Exp
+and = Lambda ["x", "y"] (Case (Var "x") [
+							("True", [], Case (Var "y") [
+										("True", [], Const "True"),
+										("False", [], Const "False")
+									]),
+							("False", [], Const "False")]);
