@@ -62,8 +62,21 @@ evalAplic(e, es) = case eval(e) of {
 		False -> eval(sust(u, zip xs (map eval es)));
 	};
 	Aplic (Const c) xs -> Aplic (Const c) (xs ++ (map eval es));
+	_ -> error errorMsg;
 }
 
 evalCase :: (Exp, [Bs]) -> Exp
-evalCase(e, bs) = e
--- TODO
+evalCase(e, bs) = case eval(e) of {
+	Aplic (Const c) xs -> case length(xs) != length(snd(findExpCase(bs,c))) {
+		True -> error errorMsg;
+		False -> eval(sust(fst(findExpCase(bs, c)), zip snd(findExpCase(bs, c)) xs));
+	};
+	_ -> error errorMsg;
+}
+
+findExpCase :: ([Bs], String) -> (Exp, [String])
+findExpCase([], c) = error errorMsg
+findExpCase((x, xs, e):bs, c) = case x == c of {
+	False -> findExpCase(bs, c);
+	True -> (e, xs);
+}
