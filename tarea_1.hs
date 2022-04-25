@@ -67,9 +67,9 @@ evalAplic(e, es) = case eval(e) of {
 
 evalCase :: (Exp, [Bs]) -> Exp
 evalCase(e, bs) = case eval(e) of {
-	Aplic (Const c) xs -> case length(xs) != length(snd(findExpCase(bs,c))) {
+	Aplic (Const c) xs -> case length(xs) /= length(snd(findExpCase(bs,c))) of {
 		True -> error errorMsg;
-		False -> eval(sust(fst(findExpCase(bs, c)), zip snd(findExpCase(bs, c)) xs));
+		False -> eval(sust(fst(findExpCase(bs, c)), zip (snd(findExpCase(bs, c))) xs));
 	};
 	_ -> error errorMsg;
 }
