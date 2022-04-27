@@ -41,15 +41,13 @@ sust(Aplic e es, s) = Aplic (sust(e, s)) es
 sust(Case e t, s) = Case (sust(e, s)) (sustBsList(s, t))
 sust(Rec x e, s) = Rec x (sust(e, s))
 
-
 -- 3
-
 errorMsg :: String
 errorMsg = "La expresión no puede ser reducida"
 
 eval :: (Exp) -> Exp
 eval(Var x) = error errorMsg
-eval(Const c) = Aplic (Const c) 
+eval(Const c) = Aplic (Const c) []
 eval(Lambda xs e) = Lambda xs e
 eval(Aplic e es) = evalAplic(e, es)
 eval(Case e t) = evalCase(e, t)
@@ -84,10 +82,18 @@ findExpCase((x, xs, e):bs, c) = case x == c of {
 -- 4
 and :: Exp
 and = Lambda ["x", "y"] (Case (Var "x") [
-							("True", [], Case (Var "y") [
+							("True", ["y"], Case (Var "y") [
 										("True", [], Const "True"),
 										("False", [], Const "False")
 									]),
 							("False", [], Const "False")]);
 
+-- duplicar :: Exp
+-- duplicar = Rec "x" Case (Var "x") [
+	-- ("x", [], Const "S" (Const "S" e))
 
+-- unir :: Exp
+-- unir = 
+
+-- ramaI :: Exp
+-- ramaI =
