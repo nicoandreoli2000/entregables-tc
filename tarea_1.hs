@@ -48,8 +48,8 @@ errorMsg :: String
 errorMsg = "La expresión no puede ser reducida"
 
 eval :: (Exp) -> Exp
-eval(Var x) = Var x
-eval(Const c) = Const c
+eval(Var x) = error errorMsg
+eval(Const c) = Aplic (Const c) 
 eval(Lambda xs e) = Lambda xs e
 eval(Aplic e es) = evalAplic(e, es)
 eval(Case e t) = evalCase(e, t)
@@ -89,3 +89,5 @@ and = Lambda ["x", "y"] (Case (Var "x") [
 										("False", [], Const "False")
 									]),
 							("False", [], Const "False")]);
+
+
