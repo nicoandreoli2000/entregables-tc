@@ -89,8 +89,7 @@ and = Lambda ["x", "y"] (Case (Var "x") [
 							("False", [], Const "False")]);
 
 -- duplicar :: Exp
--- duplicar = Rec "x" Case (Var "x") [
-	-- ("x", [], Const "S" (Const "S" e))
+-- duplicar = 
 
 -- unir :: Exp
 -- unir = 
