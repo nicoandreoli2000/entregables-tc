@@ -82,17 +82,38 @@ findExpCase((x, xs, e):bs, c) = case x == c of {
 -- 4
 and :: Exp
 and = Lambda ["x", "y"] (Case (Var "x") [
-							("True", ["y"], Case (Var "y") [
-										("True", [], Const "True"),
-										("False", [], Const "False")
-									]),
-							("False", [], Const "False")]);
+							("True", [], Var "y"),
+							("False", [], Const "False")])
+testAnd :: Exp
+testAnd = eval(Aplic and [Const "True", Const "False"])
 
--- duplicar :: Exp
--- duplicar = 
+duplicar :: Exp
+duplicar = Rec "D" (Case (Var "x") [
+									("O", [], Const "O"),
+									("S", ["y"], Aplic (Const "S") [Aplic (Const "S") [Aplic (Var "D") [Var "y"]]])
+									])
 
--- unir :: Exp
--- unir = 
+testDuplicar :: Exp
+testDuplicar = eval(Aplic duplicar [Aplic (Const "S") [Const "O"]])
 
--- ramaI :: Exp
--- ramaI =
+unir :: Exp
+unir = Rec "++" (Lambda ["xs","ys"] (Case (Var "xs") [
+									("[]" , [] , Var "ys"),
+									(":" , ["z", "zs"] , Case (Var "ys") [
+																("[]", [], Var "xs"),
+																(":", ["w", "ws"], Aplic (Const ":") [Var "z", Aplic (Const ":") [Var "w", Aplic (Var "++") [Var "zs", Var "ws"]]])
+																])
+									]))
+
+testUnir :: Exp
+testUnir = eval(Aplic unir [Aplic (Const ":") [Const "0", Aplic (Const ":") [Const "1"]],
+							Aplic (Const ":") [Const "2", Aplic (Const ":") [Const "3"]]])
+
+ramaI :: Exp
+ramaI = Rec "I" (Lambda ["x"] (Case (Var "x") [
+								("H", [], Const "[]"),
+								("N", ["izq", "mid", "der"] , Aplic (Const ":") [(Var "der"), Aplic (Var "I") [Var "izq"]])
+								]))
+
+testRamaI :: Exp
+testRamaI = eval(Aplic ramaI [Aplic (Const "N") [Var "x", Aplic (Const "N") [Var "y", Aplic (Const "H") [], Aplic (Const "H") []], Aplic (Const "N") [Var "z", Aplic (Const "H") [], Aplic (Const "H") []]]])
