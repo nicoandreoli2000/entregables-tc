@@ -23,11 +23,22 @@ search(x, s) = case lookup x s of {
 	Nothing -> Var x;
 }
 
+-- erease :: (Sigma, [String]) -> Sigma
+-- erease(s, xs) = filter (\e -> notElem (fst(e)) xs) s
+
 erease :: (Sigma, [String]) -> Sigma
-erease(s, xs) = filter (\e -> notElem (fst(e)) xs) s
+erease(s, []) = s
+erease(s, (y:ys)) = erease((baja s y), ys)
+		
+baja :: Sigma -> String -> Sigma 
+baja [] x = []
+baja ((s,e):xs) x
+			| (x==s) = xs
+			| otherwise = (s,e):(baja xs x)
 
 sustBs :: (Sigma, Bs) -> Bs
-sustBs(s, (x, xs, e)) = (x, xs, sust(e, erease(s, xs)))
+sustBs([], b) = b
+sustBs((s, e):xs, (y, ys, v)) = sustBs(xs, (y, ys, sust(v, erease([(s, e)], ys))))
 
 sustBsList :: (Sigma, [Bs]) -> [Bs]
 sustBsList(z, []) = []
@@ -37,10 +48,14 @@ sust :: (Exp, Sigma) -> Exp
 sust(Var x, s) = search(x,s)
 sust(Const c, s) = Const c
 sust(Lambda xs e, s) = Lambda xs (sust(e, erease(s, xs)))
-sust(Aplic e es, s) = Aplic (sust(e, s)) es
+sust(Aplic e es, s) = Aplic (sust(e, s)) (aux(s, es))
 sust(Case e t, s) = Case (sust(e, s)) (sustBsList(s, t))
 sust(Rec x e, s) = Rec x (sust(e, s))
 
+
+aux :: (Sigma, [Exp]) -> [Exp]
+aux(s, []) = []
+aux(s, e:es) = [sust(e, s)] ++ aux(s, es)
 -- 3
 errorMsg :: String
 errorMsg = "La expresión no puede ser reducida"
@@ -88,10 +103,10 @@ testAnd :: Exp
 testAnd = eval(Aplic and [Const "True", Const "False"])
 
 duplicar :: Exp
-duplicar = Rec "D" (Case (Var "x") [
-							("O", [], Const "O"),
-							("S", ["y"], Aplic (Const "S") [Aplic (Const "S") [Aplic (Var "D") [Var "y"]]])
-							])
+duplicar = Rec "D" (Lambda ["x"] (Case (Var "x") [
+										("O", [], Const "O"),
+										("S", ["y"], Aplic (Const "S") [Aplic (Const "S") [Aplic (Var "D") [Var "y"]]])
+										]))
 
 testDuplicar :: Exp
 testDuplicar = eval(Aplic duplicar [Aplic (Const "S") [Const "O"]])
@@ -106,8 +121,8 @@ unir = Rec "++" (Lambda ["xs","ys"] (Case (Var "xs") [
 									]))
 
 testUnir :: Exp
-testUnir = eval(Aplic unir [Aplic (Const ":") [Const "0", Aplic (Const ":") [Const "1"]],
-							Aplic (Const ":") [Const "2", Aplic (Const ":") [Const "3"]]])
+testUnir = eval(Aplic unir [Aplic (Const ":") [Const "0", Const "1"],
+							Aplic (Const ":") [Const "2", Const "3"]])
 
 ramaI :: Exp
 ramaI = Rec "I" (Lambda ["x"] (Case (Var "x") [
