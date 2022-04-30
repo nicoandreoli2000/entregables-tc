@@ -88,14 +88,19 @@ duplicar =Rec "*2" (L ["n"] (Case (Var "n")[
 						("S" , (["x"] , (Ap (C "S") [Ap (C "S") [Ap (Var "*2") [Var "x"]]])))
 						]))
 
--- unir :: E 
--- unir = Rec "++" (L ["xs","ys"] (Case (Var "xs") [
--- 									("[]" , ([] , (Var "ys"))),
--- 									(":" , (["z","zs"] , (Case (Var "ys") [
--- 																("[]" , ([] , (Var "xs"))),
--- 																(":" , (["w","ws"] , (Ap (C ":") [(Var "z"),(Ap (C ":") [(Var "w"),(Ap (Var "++") [(Var "zs"),(Var "ws")])])])))
--- 																])))
--- 									]))
+unir :: E 
+unir = Rec "++" (L ["xs","ys"] (Case (Var "xs") [
+									("[]" , ([] , (Var "ys"))),
+									(":" , (["z","zs"] , (Case (Var "ys") [
+																("[]" , ([] , (Var "xs"))),
+																(":" , (["w","ws"] , (Ap (C ":") [(Var "z"),(Ap (C ":") [(Var "w"),(Ap (Var "++") [(Var "zs"),(Var "ws")])])])))
+																])))
+									]))
+
+testUnir :: E
+testUnir = eval(Ap unir [Ap (C ":") [C "0", C "1"],
+							Ap (C ":") [C "2", C "3"]])
+
 
 -- ramaI :: E
 -- ramaI = Rec "ri" (L ["a"] (Case (Var "a") [

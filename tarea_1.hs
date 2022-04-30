@@ -112,17 +112,14 @@ testDuplicar :: Exp
 testDuplicar = eval(Aplic duplicar [Aplic (Const "S") [Const "O"]])
 
 unir :: Exp
-unir = Rec "++" (Lambda ["xs","ys"] (Case (Var "xs") [
-									("[]" , [] , Var "ys"),
-									(":" , ["z", "zs"] , Case (Var "ys") [
-																("[]", [], Var "xs"),
-																(":", ["w", "ws"], Aplic (Const ":") [Var "z", Aplic (Const ":") [Var "w", Aplic (Var "++") [Var "zs", Var "ws"]]])
-																])
+unir = Rec "U" (Lambda ["xs","ys"] (Case (Var "xs") [
+									("[]", [], Var "ys"),
+									(":", ["z", "zs"], Aplic (Const ":") [Var "z", Aplic (Var "U") [Var "zs", Var "ys"]])
 									]))
 
 testUnir :: Exp
-testUnir = eval(Aplic unir [Aplic (Const ":") [Const "0", Const "1"],
-							Aplic (Const ":") [Const "2", Const "3"]])
+testUnir = eval(Aplic unir [Aplic (Const ":") [Const "0", Aplic (Const ":") [Const "1", Const "[]"]],
+							Aplic (Const ":") [Const "2", Aplic (Const ":") [Const "3", Const "[]"]]])
 
 ramaI :: Exp
 ramaI = Rec "I" (Lambda ["x"] (Case (Var "x") [
