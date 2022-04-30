@@ -108,7 +108,7 @@ duplicar = Rec "Duplicar" (Lambda ["x"] (Case (Var "x") [
 										]))
 
 testDuplicar :: Exp
-testDuplicar = eval (Aplic duplicar [Aplic (Const "S") [Const "O"]])
+testDuplicar = eval (Aplic duplicar [Aplic (Const "S") [Aplic (Const "S") [Const "O"]]])
 
 unir :: Exp
 unir = Rec "Unir" (Lambda ["xs","ys"] (Case (Var "xs") [
