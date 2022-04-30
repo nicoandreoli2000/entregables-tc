@@ -89,9 +89,9 @@ testAnd = eval(Aplic and [Const "True", Const "False"])
 
 duplicar :: Exp
 duplicar = Rec "D" (Case (Var "x") [
-									("O", [], Const "O"),
-									("S", ["y"], Aplic (Const "S") [Aplic (Const "S") [Aplic (Var "D") [Var "y"]]])
-									])
+							("O", [], Const "O"),
+							("S", ["y"], Aplic (Const "S") [Aplic (Const "S") [Aplic (Var "D") [Var "y"]]])
+							])
 
 testDuplicar :: Exp
 testDuplicar = eval(Aplic duplicar [Aplic (Const "S") [Const "O"]])
