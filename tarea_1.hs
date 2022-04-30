@@ -98,28 +98,28 @@ testAnd :: Exp
 testAnd = eval (Aplic and [Const "True", Const "False"])
 
 duplicar :: Exp
-duplicar = Rec "D" (Lambda ["x"] (Case (Var "x") [
+duplicar = Rec "Duplicar" (Lambda ["x"] (Case (Var "x") [
 										("O", [], Const "O"),
-										("S", ["y"], Aplic (Const "S") [Aplic (Const "S") [Aplic (Var "D") [Var "y"]]])
+										("S", ["y"], Aplic (Const "S") [Aplic (Const "S") [Aplic (Var "Duplicar") [Var "y"]]])
 										]))
 
 testDuplicar :: Exp
 testDuplicar = eval (Aplic duplicar [Aplic (Const "S") [Const "O"]])
 
 unir :: Exp
-unir = Rec "U" (Lambda ["xs","ys"] (Case (Var "xs") [
+unir = Rec "Unir" (Lambda ["xs","ys"] (Case (Var "xs") [
 									("[]", [], Var "ys"),
-									(":", ["z", "zs"], Aplic (Const ":") [Var "z", Aplic (Var "U") [Var "zs", Var "ys"]])
+									(":", ["z", "zs"], Aplic (Const ":") [Var "z", Aplic (Var "Unir") [Var "zs", Var "ys"]])
 									]))
 
 testUnir :: Exp
 testUnir = eval (Aplic unir [Aplic (Const ":") [Const "0", Aplic (Const ":") [Const "1", Const "[]"]],
-							Aplic (Const ":") [Const "2", Aplic (Const ":") [Const "3", Const "[]"]]])
+							 Aplic (Const ":") [Const "2", Aplic (Const ":") [Const "3", Const "[]"]]])
 
 auxRamaI :: Exp
-auxRamaI = Rec "A" (Lambda ["x"] (Case (Var "x") [
+auxRamaI = Rec "Aux" (Lambda ["x"] (Case (Var "x") [
 										("Leaf", [], Const "[]"),
-										("Tree", ["izq", "mid", "der"], Aplic (Const ":") [Var "mid", Aplic (Const ":") [Aplic (Var "A") [Var "izq"], Aplic (Var "A") [Var "der"]]])
+										("Tree", ["izq", "mid", "der"], Aplic (Const ":") [Var "mid", Aplic (Const ":") [Aplic (Var "A") [Var "izq"], Aplic (Var "Aux") [Var "der"]]])
 										]))
 
 ramaI :: Exp
