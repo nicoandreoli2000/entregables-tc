@@ -6,14 +6,16 @@ module Chi where
 
 import Prelude hiding (and)
 
--- 1
+
+-- Ej 1
 
 data Exp = Var String | Const String | Lambda [String] Exp | Aplic Exp [Exp] | Case Exp [Bs] | Rec String Exp
 	deriving Show
 
 type Bs = (String, [String], Exp)
 
--- 2
+
+-- Ej 2
 
 type Sigma = [(String, Exp)]
 
@@ -50,7 +52,7 @@ sust (Aplic e es) s = Aplic (sust e s) (map (\x -> sust x s) es)
 sust (Case e t) s = Case (sust e s) (sustBsList s t)
 sust (Rec x e) s = Rec x (sust e s)
 
--- 3
+-- Ej 3
 
 errorMsg :: String
 errorMsg = "La expresión no puede ser reducida"
@@ -89,7 +91,9 @@ findExpCase ((x, xs, e):bs) c = case x == c of {
 	True -> (e, xs);
 }
 
--- 4
+
+-- Ej 4
+
 and :: Exp
 and = Lambda ["x", "y"] (Case (Var "x") [
 							("True", [], Var "y"),
@@ -133,8 +137,21 @@ testRamaI = eval (Aplic ramaI [Aplic (Const "Tree") [
 									Aplic (Const "Tree") [
 													Const "Leaf",
 													Const "2",
-													Aplic (Const "Tree") [Const "Leaf", Const "3", Const "Leaf"]
+													Aplic (Const "Tree") [
+																	Aplic (Const "Tree") [
+																					Const "Leaf",
+																					Const "4",
+																					Const "Leaf"
+																					]
+													],
+																	Const "3",
+																	Const "Leaf"
+																	]
 													],
 									Const "1",
-									Aplic (Const "Tree") [Const "Leaf", Const "99", Const "Leaf"]
+									Aplic (Const "Tree") [
+													Const "Leaf",
+													Const "99",
+													Const "Leaf"
+													]
 									]])
