@@ -55,37 +55,37 @@ sust (Rec x e) s = Rec x (sust e s)
 errorMsg :: String
 errorMsg = "La expresión no puede ser reducida"
 
-eval :: (Exp) -> Exp
-eval(Var x) = error errorMsg
-eval(Const c) = Aplic (Const c) []
-eval(Lambda xs e) = Lambda xs e
-eval(Aplic e es) = evalAplic(e, es)
-eval(Case e t) = evalCase(e, t)
-eval(Rec x e) = eval(sust e [(x, Rec x e)])
+eval :: Exp -> Exp
+eval (Var x) = error errorMsg
+eval (Const c) = Aplic (Const c) []
+eval (Lambda xs e) = Lambda xs e
+eval (Aplic e es) = evalAplic e es
+eval (Case e t) = evalCase e t
+eval (Rec x e) = eval (sust e [(x, Rec x e)])
 
-evalAplic :: (Exp, [Exp]) -> Exp
-evalAplic(e, es) = case eval(e) of {
-	Lambda xs u -> case length(xs) /= length(es) of {
+evalAplic :: Exp -> [Exp] -> Exp
+evalAplic e es = case eval e of {
+	Lambda xs u -> case length xs /= length es of {
 		True -> error errorMsg;
-		False -> eval(sust u (zip xs (map eval es)));
+		False -> eval (sust u (zip xs (map eval es)));
 	};
 	Aplic (Const c) xs -> Aplic (Const c) (xs ++ (map eval es));
 	_ -> error errorMsg;
 }
 
-evalCase :: (Exp, [Bs]) -> Exp
-evalCase(e, bs) = case eval(e) of {
-	Aplic (Const c) xs -> case length(xs) /= length(snd(findExpCase(bs,c))) of {
+evalCase :: Exp -> [Bs] -> Exp
+evalCase e bs = case eval e of {
+	Aplic (Const c) xs -> case length xs /= length (snd (findExpCase bs c)) of {
 		True -> error errorMsg;
-		False -> eval(sust (fst(findExpCase(bs, c))) (zip (snd(findExpCase(bs, c))) xs));
+		False -> eval (sust (fst (findExpCase bs c)) (zip (snd (findExpCase bs c)) xs));
 	};
 	_ -> error errorMsg;
 }
 
-findExpCase :: ([Bs], String) -> (Exp, [String])
-findExpCase([], c) = error errorMsg
-findExpCase((x, xs, e):bs, c) = case x == c of {
-	False -> findExpCase(bs, c);
+findExpCase :: [Bs] -> String -> (Exp, [String])
+findExpCase [] c = error errorMsg
+findExpCase ((x, xs, e):bs) c = case x == c of {
+	False -> findExpCase bs c;
 	True -> (e, xs);
 }
 
@@ -95,7 +95,7 @@ and = Lambda ["x", "y"] (Case (Var "x") [
 							("True", [], Var "y"),
 							("False", [], Const "False")])
 testAnd :: Exp
-testAnd = eval(Aplic and [Const "True", Const "False"])
+testAnd = eval (Aplic and [Const "True", Const "False"])
 
 duplicar :: Exp
 duplicar = Rec "D" (Lambda ["x"] (Case (Var "x") [
@@ -104,7 +104,7 @@ duplicar = Rec "D" (Lambda ["x"] (Case (Var "x") [
 										]))
 
 testDuplicar :: Exp
-testDuplicar = eval(Aplic duplicar [Aplic (Const "S") [Const "O"]])
+testDuplicar = eval (Aplic duplicar [Aplic (Const "S") [Const "O"]])
 
 unir :: Exp
 unir = Rec "U" (Lambda ["xs","ys"] (Case (Var "xs") [
@@ -113,7 +113,7 @@ unir = Rec "U" (Lambda ["xs","ys"] (Case (Var "xs") [
 									]))
 
 testUnir :: Exp
-testUnir = eval(Aplic unir [Aplic (Const ":") [Const "0", Aplic (Const ":") [Const "1", Const "[]"]],
+testUnir = eval (Aplic unir [Aplic (Const ":") [Const "0", Aplic (Const ":") [Const "1", Const "[]"]],
 							Aplic (Const ":") [Const "2", Aplic (Const ":") [Const "3", Const "[]"]]])
 
 auxRamaI :: Exp
@@ -129,7 +129,7 @@ ramaI = Lambda ["x"] (Case (Var "x") [
 							])
 
 testRamaI :: Exp
-testRamaI = eval(Aplic ramaI [Aplic (Const "Tree") [
+testRamaI = eval (Aplic ramaI [Aplic (Const "Tree") [
 									Aplic (Const "Tree") [
 													Const "Leaf",
 													Const "2",
