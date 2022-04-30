@@ -142,8 +142,7 @@ testRamaI = eval (Aplic ramaI [Aplic (Const "Tree") [
 																					Const "Leaf",
 																					Const "4",
 																					Const "Leaf"
-																					]
-													],
+																					],
 																	Const "3",
 																	Const "Leaf"
 																	]
