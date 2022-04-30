@@ -17,46 +17,41 @@ type Bs = (String, [String], Exp)
 
 type Sigma = [(String, Exp)]
 
-search :: (String, Sigma) -> Exp
-search(x, s) = case lookup x s of {
+search :: String -> Sigma -> Exp
+search x s = case lookup x s of {
 	Just e -> e;
 	Nothing -> Var x;
 }
 
--- erease :: (Sigma, [String]) -> Sigma
--- erease(s, xs) = filter (\e -> notElem (fst(e)) xs) s
-
-erease :: (Sigma, [String]) -> Sigma
-erease(s, []) = s
-erease(s, (y:ys)) = erease((baja s y), ys)
+erease :: Sigma -> [String] -> Sigma
+erease s [] = s
+erease s (y:ys) = erease (auxErease s y) ys
 		
-baja :: Sigma -> String -> Sigma 
-baja [] x = []
-baja ((s,e):xs) x
-			| (x==s) = xs
-			| otherwise = (s,e):(baja xs x)
+auxErease :: Sigma -> String -> Sigma 
+auxErease [] x = []
+auxErease ((s,e):xs) x = case x == s of {
+	True -> xs;
+	False -> (s,e):(auxErease xs x)
+}
 
-sustBs :: (Sigma, Bs) -> Bs
-sustBs([], b) = b
-sustBs((s, e):xs, (y, ys, v)) = sustBs(xs, (y, ys, sust(v, erease([(s, e)], ys))))
+sustBs :: Sigma -> Bs -> Bs
+sustBs [] b = b
+sustBs ((s, e):xs) (y, ys, v) = sustBs xs (y, ys, sust v (erease [(s, e)] ys))
 
-sustBsList :: (Sigma, [Bs]) -> [Bs]
-sustBsList(z, []) = []
-sustBsList(s, b:bs) = [sustBs(s, b)] ++ sustBsList(s, bs)
+sustBsList :: Sigma -> [Bs] -> [Bs]
+sustBsList s [] = []
+sustBsList s (b:bs) = (sustBs s b):(sustBsList s bs)
 
-sust :: (Exp, Sigma) -> Exp
-sust(Var x, s) = search(x,s)
-sust(Const c, s) = Const c
-sust(Lambda xs e, s) = Lambda xs (sust(e, erease(s, xs)))
-sust(Aplic e es, s) = Aplic (sust(e, s)) (aux(s, es))
-sust(Case e t, s) = Case (sust(e, s)) (sustBsList(s, t))
-sust(Rec x e, s) = Rec x (sust(e, s))
+sust :: Exp -> Sigma -> Exp
+sust (Var x) s = search x s
+sust (Const c) s = Const c
+sust (Lambda xs e) s = Lambda xs (sust e (erease s xs))
+sust (Aplic e es) s = Aplic (sust e s) (map (\x -> sust x s) es)
+sust (Case e t) s = Case (sust e s) (sustBsList s t)
+sust (Rec x e) s = Rec x (sust e s)
 
-
-aux :: (Sigma, [Exp]) -> [Exp]
-aux(s, []) = []
-aux(s, e:es) = [sust(e, s)] ++ aux(s, es)
 -- 3
+
 errorMsg :: String
 errorMsg = "La expresión no puede ser reducida"
 
@@ -66,13 +61,13 @@ eval(Const c) = Aplic (Const c) []
 eval(Lambda xs e) = Lambda xs e
 eval(Aplic e es) = evalAplic(e, es)
 eval(Case e t) = evalCase(e, t)
-eval(Rec x e) = eval(sust(e,[(x, Rec x e)]))
+eval(Rec x e) = eval(sust e [(x, Rec x e)])
 
 evalAplic :: (Exp, [Exp]) -> Exp
 evalAplic(e, es) = case eval(e) of {
 	Lambda xs u -> case length(xs) /= length(es) of {
 		True -> error errorMsg;
-		False -> eval(sust(u, zip xs (map eval es)));
+		False -> eval(sust u (zip xs (map eval es)));
 	};
 	Aplic (Const c) xs -> Aplic (Const c) (xs ++ (map eval es));
 	_ -> error errorMsg;
@@ -82,7 +77,7 @@ evalCase :: (Exp, [Bs]) -> Exp
 evalCase(e, bs) = case eval(e) of {
 	Aplic (Const c) xs -> case length(xs) /= length(snd(findExpCase(bs,c))) of {
 		True -> error errorMsg;
-		False -> eval(sust(fst(findExpCase(bs, c)), zip (snd(findExpCase(bs, c))) xs));
+		False -> eval(sust (fst(findExpCase(bs, c))) (zip (snd(findExpCase(bs, c))) xs));
 	};
 	_ -> error errorMsg;
 }
