@@ -121,11 +121,25 @@ testUnir :: Exp
 testUnir = eval(Aplic unir [Aplic (Const ":") [Const "0", Aplic (Const ":") [Const "1", Const "[]"]],
 							Aplic (Const ":") [Const "2", Aplic (Const ":") [Const "3", Const "[]"]]])
 
+auxRamaI :: Exp
+auxRamaI = Rec "A" (Lambda ["x"] (Case (Var "x") [
+										("Leaf", [], Const "[]"),
+										("Tree", ["izq", "mid", "der"], Aplic (Const ":") [Var "mid", Aplic (Const ":") [Aplic (Var "A") [Var "izq"], Aplic (Var "A") [Var "der"]]])
+										]))
+
 ramaI :: Exp
-ramaI = Rec "I" (Lambda ["x"] (Case (Var "x") [
-								("H", [], Const "[]"),
-								("N", ["izq", "mid", "der"] , Aplic (Const ":") [(Var "der"), Aplic (Var "I") [Var "izq"]])
-								]))
+ramaI = Lambda ["x"] (Case (Var "x") [
+							("Leaf", [], Const "[]"),
+							("Tree", ["izq", "mid", "der"] , Aplic (Const ":") [Var "mid", Aplic auxRamaI [Var "izq"]])
+							])
 
 testRamaI :: Exp
-testRamaI = eval(Aplic ramaI [Aplic (Const "N") [Var "x", Aplic (Const "N") [Var "y", Aplic (Const "H") [], Aplic (Const "H") []], Aplic (Const "N") [Var "z", Aplic (Const "H") [], Aplic (Const "H") []]]])
+testRamaI = eval(Aplic ramaI [Aplic (Const "Tree") [
+									Aplic (Const "Tree") [
+													Const "Leaf",
+													Const "2",
+													Aplic (Const "Tree") [Const "Leaf", Const "3", Const "Leaf"]
+													],
+									Const "1",
+									Aplic (Const "Tree") [Const "Leaf", Const "99", Const "Leaf"]
+									]])
