@@ -119,7 +119,7 @@ testUnir = eval (Aplic unir [Aplic (Const ":") [Const "0", Aplic (Const ":") [Co
 auxRamaI :: Exp
 auxRamaI = Rec "Aux" (Lambda ["x"] (Case (Var "x") [
 										("Leaf", [], Const "[]"),
-										("Tree", ["izq", "mid", "der"], Aplic (Const ":") [Var "mid", Aplic (Const ":") [Aplic (Var "A") [Var "izq"], Aplic (Var "Aux") [Var "der"]]])
+										("Tree", ["izq", "mid", "der"], Aplic (Const ":") [Var "mid", Aplic (Const ":") [Aplic (Var "Aux") [Var "izq"], Aplic (Var "Aux") [Var "der"]]])
 										]))
 
 ramaI :: Exp
