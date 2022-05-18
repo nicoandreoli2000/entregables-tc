@@ -19,8 +19,18 @@ data Instr = Asign [(String,Exp)] | Case String [Rama] | While String [Rama]
 data Exp = Var String | ConstExp String [Exp] 
 	deriving Show	
 
---fn
+--eval
 
 --Ej4
+--ejec 1 paso
+
 --Ej5
+--ejec completa
+
+
 --Ej6
+--par
+--suma
+--largo
+--igualdadN
+--fibonacci
