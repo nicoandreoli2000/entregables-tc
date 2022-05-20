@@ -42,9 +42,10 @@ eval m (ConstExp c e) = ConstVal c (map (eval m) e)
 
 --Ej4
 ejec :: Mem -> Prog -> (Mem, Prog)
-ejec m (Assign (x,e):a) = (m, Assign (x,e):a)
-ejec m (Case x (y,(z:zs,p))) = (m, Case x (y,(z:zs,p)))
-ejec m (While x (y,(z:zs,p))) = (m, While x (y,(z:zs,p)))
+ejec m [] = (m, [])
+-- (Asign p@((x,e):a)
+-- ejec m (Case x (y,(z:zs,p))) = (m, Case x (y,(z:zs,p)))
+-- ejec m (While x (y,(z:zs,p))) = (m, While x (y,(z:zs,p)))
 
 --Ej5
 --ejec completa
