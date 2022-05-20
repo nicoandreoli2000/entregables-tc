@@ -42,8 +42,7 @@ eval m (ConstExp c e) = ConstVal c (map (eval m) e)
 
 --Ej4
 ejec :: Mem -> Prog -> (Mem, Prog)
-ejec m [] = (m, [])
--- (Asign p@((x,e):a)
+ejec m (Asign p:ps) = (update m (zip (map fst p) (map (eval m) (map snd p))), ps)
 -- ejec m (Case x (y,(z:zs,p))) = (m, Case x (y,(z:zs,p)))
 -- ejec m (While x (y,(z:zs,p))) = (m, While x (y,(z:zs,p)))
 
