@@ -47,7 +47,9 @@ ejec m (Asign p:ps) = (update m (zip (map fst p) (map (eval m) (map snd p))), ps
 -- ejec m (While x (y,(z:zs,p))) = (m, While x (y,(z:zs,p)))
 
 --Ej5
---ejec completa
+ejecTotal :: Mem -> Prog -> (Mem, Prog)
+ejecTotal [] p = ([],p)
+ejecTotal m p = ejecTotal (fst(ejec m p)) (snd(ejec m p))
 
 
 --Ej6
