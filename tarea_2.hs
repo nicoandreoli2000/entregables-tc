@@ -41,7 +41,10 @@ eval m (Var x) = lookupImp m x
 eval m (ConstExp c e) = ConstVal c (map (eval m) e)
 
 --Ej4
---ejec 1 paso
+ejec :: Mem -> Prog -> (Mem, Prog)
+ejec m (Assign (x,e):a) = (m, Assign (x,e):a)
+ejec m (Case x (y,(z:zs,p))) = (m, Case x (y,(z:zs,p)))
+ejec m (While x (y,(z:zs,p))) = (m, While x (y,(z:zs,p)))
 
 --Ej5
 --ejec completa
