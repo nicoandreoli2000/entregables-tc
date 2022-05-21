@@ -52,6 +52,7 @@ ejec m ((Case x bs):ps) = (update m (zip xs vs), p++ps)
 		};
 	}
 ejec m ((While x bs):ps) = case lookup c bs of {
+	Nothing -> (m, ps);
 	Just t -> (update m (zip xs vs), p++((While x bs):ps))
 		where {
 			(xs, p) = case lookup c bs of {
@@ -59,7 +60,6 @@ ejec m ((While x bs):ps) = case lookup c bs of {
 				Nothing -> error "El constructor no se encuentra en las ramas";
 			};
 		};
-	Nothing -> (m, ps);
 } where {
 	ConstVal c vs = lookupImp m x;
 }
@@ -71,6 +71,7 @@ ejecTotal m p = ejecTotal (fst(ejec m p)) (snd(ejec m p))
 
 
 --Ej6
+
 --par
 --suma
 --largo
