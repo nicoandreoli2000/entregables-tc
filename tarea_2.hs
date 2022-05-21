@@ -43,23 +43,21 @@ eval m (ConstExp c e) = ConstVal c (map (eval m) e)
 --Ej4
 ejec :: Mem -> Prog -> (Mem, Prog)
 ejec m ((Asign p):ps) = (update m (zip (map fst p) (map (eval m) (map snd p))), ps)
-ejec m ((Case x bs):ps) = (update m (zip xs vs), p++ps)
-	where {
-		ConstVal c vs = lookupImp m x;
-		(xs, p) = case lookup c bs of {
-			Just t -> t;
-			Nothing -> error "El constructor no se encuentra en las ramas";
-		};
-	}
+ejec m ((Case x bs):ps) = (update m (zip xs vs), p++ps) where {
+	ConstVal c vs = lookupImp m x;
+	(xs, p) = case lookup c bs of {
+		Just t -> t;
+		Nothing -> error "El constructor no se encuentra en las ramas";
+	};
+}
 ejec m ((While x bs):ps) = case lookup c bs of {
 	Nothing -> (m, ps);
-	Just t -> (update m (zip xs vs), p++((While x bs):ps))
-		where {
-			(xs, p) = case lookup c bs of {
-				Just e -> e;
-				Nothing -> error "El constructor no se encuentra en las ramas";
-			};
+	Just t -> (update m (zip xs vs), p++((While x bs):ps)) where {
+		(xs, p) = case lookup c bs of {
+			Just e -> e;
+			Nothing -> error "El constructor no se encuentra en las ramas";
 		};
+	};
 } where {
 	ConstVal c vs = lookupImp m x;
 }
