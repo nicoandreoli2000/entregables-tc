@@ -4,7 +4,7 @@
 
 module Imp where
 
-import Prelude
+import Prelude hiding (not)
 
 --Ej 1,2,3
 
@@ -42,6 +42,7 @@ eval m (ConstExp c e) = ConstVal c (map (eval m) e)
 
 --Ej4
 ejec :: Mem -> Prog -> (Mem, Prog)
+ejec m [] = (m, [])
 ejec m ((Asign p):ps) = (update m (zip (map fst p) (map (eval m) (map snd p))), ps)
 ejec m ((Case x bs):ps) = (update m (zip xs vs), p++ps) where {
 	ConstVal c vs = lookupImp m x;
@@ -51,26 +52,43 @@ ejec m ((Case x bs):ps) = (update m (zip xs vs), p++ps) where {
 	};
 }
 ejec m ((While x bs):ps) = case lookup c bs of {
-	Nothing -> (m, ps);
 	Just t -> (update m (zip xs vs), p++((While x bs):ps)) where {
 		(xs, p) = case lookup c bs of {
 			Just e -> e;
 			Nothing -> error "El constructor no se encuentra en las ramas";
 		};
 	};
+	Nothing -> (m, ps);
 } where {
 	ConstVal c vs = lookupImp m x;
 }
 
 --Ej5
-ejecTotal :: Mem -> Prog -> (Mem, Prog)
-ejecTotal [] p = ([],p)
-ejecTotal m p = ejecTotal (fst(ejec m p)) (snd(ejec m p))
+ejecTotal :: Mem -> Prog -> Mem
+ejecTotal [] p = []
+ejecTotal n t = ejecTotal m p where {
+	(m, p) = ejec n t
+}
 
 
 --Ej6
+m :: Mem
+m = [("x", ConstVal "True" [])]
 
+--not
+not :: Prog
+not = [Case "x" [
+		("True", ([], [Asign [("x", ConstExp "False" [])]])),
+		("False", ([], [Asign [("x", ConstExp "True" [])]]))
+		]
+	]
 --par
+-- par :: Prog
+-- par = [ 
+-- 	Assign [("esPar", false),("n", Var "x")],
+-- 	While "n" ["S",("y", [Assign [("n", Var "y")]],)]
+-- 		]
+
 --suma
 --largo
 --igualdadN
