@@ -42,7 +42,6 @@ eval m (ConstExp c e) = ConstVal c (map (eval m) e)
 
 --Ej4
 ejec :: Mem -> Prog -> (Mem, Prog)
-ejec m [] = (m, [])
 ejec m ((Asign p):ps) = (update m (zip (map fst p) (map (eval m) (map snd p))), ps)
 ejec m ((Case x bs):ps) = (update m (zip xs vs), p++ps) where {
 	ConstVal c vs = lookupImp m x;
@@ -65,7 +64,7 @@ ejec m ((While x bs):ps) = case lookup c bs of {
 
 --Ej5
 ejecTotal :: Mem -> Prog -> Mem
-ejecTotal [] p = []
+ejecTotal m [] = m
 ejecTotal n t = ejecTotal m p where {
 	(m, p) = ejec n t
 }
@@ -73,7 +72,7 @@ ejecTotal n t = ejecTotal m p where {
 
 --Ej6
 m :: Mem
-m = [("x", ConstVal "True" [])]
+m = [("x", ConstVal "False" [])]
 
 --not
 not :: Prog
@@ -82,6 +81,7 @@ not = [Case "x" [
 		("False", ([], [Asign [("x", ConstExp "True" [])]]))
 		]
 	]
+	
 --par
 -- par :: Prog
 -- par = [ 
