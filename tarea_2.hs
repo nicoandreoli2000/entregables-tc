@@ -71,25 +71,49 @@ ejecTotal n t = ejecTotal m p where {
 
 
 --Ej6
-m :: Mem
-m = [("x", ConstVal "False" [])]
 
---not
-not :: Prog
-not = [Case "x" [
-		("True", ([], [Asign [("x", ConstExp "False" [])]])),
-		("False", ([], [Asign [("x", ConstExp "True" [])]]))
+cero :: Val
+cero = ConstVal "O" []
+
+uno :: Val
+uno = ConstVal "S" [cero]
+
+dos :: Val
+dos = ConstVal "S" [uno]
+
+tres :: Val
+tres = ConstVal "S" [dos]
+
+
+mPar :: Mem
+mPar = [("x", dos)]
+mImpar = [("x", tres)]
+
+par :: Prog
+par = [ 
+	Asign [("esPar", ConstExp "True" []),("n", Var "x")],
+	While "n" [("S",(["y"], [Asign [("n", Var "y")], Case "esPar" [
+		("True", ([], [Asign [("esPar", ConstExp "False" [])]])),
+		("False", ([], [Asign [("esPar", ConstExp "True" [])]]))
+		]]))]
 		]
-	]
-	
---par
--- par :: Prog
--- par = [ 
--- 	Assign [("esPar", false),("n", Var "x")],
--- 	While "n" ["S",("y", [Assign [("n", Var "y")]],)]
--- 		]
 
---suma
---largo
---igualdadN
---fibonacci
+
+mSuma :: Mem
+mSuma = [("x", dos),("y", tres)]
+
+suma :: Prog
+suma = [ 
+	Asign [("x", Var "x"),("y", Var "y")],
+	Asign [("suma", Var "x")],
+	While "y" [("S",(["n"], [Asign [("y", Var "n")], Asign [("suma", ConstExp "S" [Var "suma"])]]))]
+		]
+
+-- mLargo :: Mem
+-- largo :: Prog
+
+-- mIgualdadN :: Mem
+-- igualdadN :: Prog
+
+-- mFibonacci :: Mem
+-- fibonacci :: Prog
