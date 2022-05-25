@@ -81,7 +81,20 @@ dos :: Val
 dos = ConstVal "S" [uno]
 tres :: Val
 tres = ConstVal "S" [dos]
+cuatro :: Val
+cuatro = ConstVal "S" [tres]
+cinco :: Val
+cinco = ConstVal "S" [cuatro]
 
+--Lists
+listaVacia :: Val
+listaVacia = ConstVal "[]" []
+listaAB :: Val
+listaAB = ConstVal ":" [ConstVal "a" [], ConstVal ":" [ConstVal "b" [], listaVacia]]
+listaCD :: Val
+listaCD = ConstVal ":" [ConstVal "c" [], ConstVal ":" [ConstVal "d" [], listaVacia]]
+
+--Functions
 
 mPar :: Mem
 mPar = [("x", dos)]
@@ -102,28 +115,54 @@ mSuma = [("x", dos),("y", tres)]
 
 suma :: Prog
 suma = [ 
-	Asign [("x", Var "x"),("y", Var "y"),("suma", Var "x")],
-	While "y" [("S",(["n"], [Asign [("y", Var "n"), ("suma", ConstExp "S" [Var "suma"])]]))]
+	Asign [("n", Var "y"),("suma", Var "x")],
+	While "n" [("S",(["n"], [Asign [("n", Var "n"), ("suma", ConstExp "S" [Var "suma"])]]))]
 	]
-
---Lists
-listaAB :: Val
-listaAB = ConstVal ":" [ConstVal "a" [], ConstVal ":" [ConstVal "b" [], ConstVal "[]" []]]
-listaCD :: Val
-listaCD = ConstVal ":" [ConstVal "c" [], ConstVal ":" [ConstVal "d" [], ConstVal "[]" []]]
 
 mLargo :: Mem
 mLargo = [("x", listaAB),("y", listaCD)]
 
 largo :: Prog
 largo = [
-	Asign [("x", Var "x"), ("y", Var "y"), ("largo", ConstExp "O" [])],
-	While "x" [(":",(["l","ls"], [Asign [("x", Var "ls"), ("largo", ConstExp "S" [Var "largo"])]]))],
-	While "y" [(":",(["l","ls"], [Asign [("y", Var "ls"), ("largo", ConstExp "S" [Var "largo"])]]))]
+	Asign [("u", Var "x"), ("v", Var "y"), ("largo", ConstExp "O" [])],
+	While "u" [(":",(["l","ls"], [Asign [("u", Var "ls"), ("largo", ConstExp "S" [Var "largo"])]]))],
+	While "v" [(":",(["l","ls"], [Asign [("v", Var "ls"), ("largo", ConstExp "S" [Var "largo"])]]))]
 	]
 
 -- mIgualdadN :: Mem
--- igualdadN :: Prog
+-- mIgualdadN = [("x",tres),("y",tres)]
 
--- mFibonacci :: Mem
--- fibonacci :: Prog
+-- igualdadN :: Prog
+-- igualdadN = [
+-- 	Asign [("z", Var "x"),("w", Var "y")]
+-- 	]
+
+mFibonacci :: Mem
+mFibonacci = [("n",cinco)]
+
+--La variable "actual" va a tener el valor n-ésimo de Fibonacci teniendo en cuenta que:
+--CB: 0, 1
+--n=1 -> 1
+--n=2 -> 2
+--n=3 -> 3
+--n=4 -> 5
+--n=5 -> 8
+
+fibonacci :: Prog
+fibonacci = [
+	Asign [("previo",ConstExp "O" []),("actual",ConstExp "S" [ConstExp "O" []]),("f",Var "n")],
+	While "f" [("S", (["z"], [
+		Asign [("f",Var "z"),("nuevo", Var "actual")],
+		While "previo" [("S",(["w"], [
+			Asign [("previo", Var "w"),("nuevo", ConstExp "S" [Var "nuevo"])]]))
+			],
+		Asign [("previo", Var "actual"),("actual", Var "nuevo")]
+		]))]
+	]
+
+-- Tests
+-- ejecTotal mPar par
+-- ejecTotal mSuma suma
+-- ejecTotal mLargo largo
+-- ejecTotal mIgualdadN IgualdadN
+-- ejecTotal mFibonacci fibonacci
