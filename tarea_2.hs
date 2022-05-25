@@ -102,16 +102,15 @@ mSuma = [("x", dos),("y", tres)]
 
 suma :: Prog
 suma = [ 
-	Asign [("x", Var "x"),("y", Var "y")],
-	Asign [("suma", Var "x")],
-	While "y" [("S",(["n"], [Asign [("y", Var "n")], Asign [("suma", ConstExp "S" [Var "suma"])]]))]
+	Asign [("x", Var "x"),("y", Var "y"),("suma", Var "x")],
+	While "y" [("S",(["n"], [Asign [("y", Var "n"), ("suma", ConstExp "S" [Var "suma"])]]))]
 	]
 
 --Lists
 listaAB :: Val
-listaAB = ConstVal ":" [ConstVal "a" [], ConstVal ":" [ConstVal "b" [], ConstVal ":" []]]
+listaAB = ConstVal ":" [ConstVal "a" [], ConstVal ":" [ConstVal "b" [], ConstVal "[]" []]]
 listaCD :: Val
-listaCD = ConstVal ":" [ConstVal "c" [], ConstVal ":" [ConstVal "d" [], ConstVal ":" []]]
+listaCD = ConstVal ":" [ConstVal "c" [], ConstVal ":" [ConstVal "d" [], ConstVal "[]" []]]
 
 mLargo :: Mem
 mLargo = [("x", listaAB),("y", listaCD)]
@@ -119,8 +118,8 @@ mLargo = [("x", listaAB),("y", listaCD)]
 largo :: Prog
 largo = [
 	Asign [("x", Var "x"), ("y", Var "y"), ("largo", ConstExp "O" [])],
-	While "x" [(":",(["l","ls"], [Asign [("x", Var "ls")], Asign [("largo", ConstExp "S" [Var "largo"])]]))],
-	While "y" [(":",(["l","ls"], [Asign [("y", Var "ls")], Asign [("largo", ConstExp "S" [Var "largo"])]]))]
+	While "x" [(":",(["l","ls"], [Asign [("x", Var "ls"), ("largo", ConstExp "S" [Var "largo"])]]))],
+	While "y" [(":",(["l","ls"], [Asign [("y", Var "ls"), ("largo", ConstExp "S" [Var "largo"])]]))]
 	]
 
 -- mIgualdadN :: Mem
