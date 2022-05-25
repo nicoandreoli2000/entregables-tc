@@ -106,8 +106,8 @@ par = [
 	While "n" [("S",(["y"], [Asign [("n", Var "y")], Case "esPar" [
 		("True", ([], [Asign [("esPar", ConstExp "False" [])]])),
 		("False", ([], [Asign [("esPar", ConstExp "True" [])]]))
-		]]))]
-		]
+	]]))]
+	]
 
 
 mSuma :: Mem
@@ -129,13 +129,28 @@ largo = [
 	While "v" [(":",(["l","ls"], [Asign [("v", Var "ls"), ("largo", ConstExp "S" [Var "largo"])]]))]
 	]
 
--- mIgualdadN :: Mem
--- mIgualdadN = [("x",tres),("y",tres)]
+mIgualdadN :: Mem
+mIgualdadN = [("x",uno),("y",uno)]
 
--- igualdadN :: Prog
--- igualdadN = [
--- 	Asign [("z", Var "x"),("w", Var "y")]
--- 	]
+igualdadN :: Prog
+igualdadN = [
+	Asign [("z", Var "x"),("w", Var "y"),("w<z", ConstExp "False" []),("sonIguales", ConstExp "False" [])],
+	While "z" [
+		("S", (["n"], [Asign [("z", Var "n")], Case "w" [
+			("S", (["m"], [Asign [("w", Var "m")]])),
+			("O", ([], [Asign [("w<z", ConstExp "True" [])]]))
+		]]))
+	],
+	Case "z" [
+		("O",([], [Case "w" [
+			("O",([], [Case "w<z" [
+				("False",([], [Asign [("sonIguales", ConstExp "True" [])]])),
+				("True",([], []))
+			]])),
+			("S",(["n"], []))
+		]]))
+	]
+	]
 
 mFibonacci :: Mem
 mFibonacci = [("n",cinco)]
@@ -155,14 +170,14 @@ fibonacci = [
 		Asign [("f",Var "z"),("nuevo", Var "actual")],
 		While "previo" [("S",(["w"], [
 			Asign [("previo", Var "w"),("nuevo", ConstExp "S" [Var "nuevo"])]]))
-			],
+		],
 		Asign [("previo", Var "actual"),("actual", Var "nuevo")]
-		]))]
+	]))]
 	]
 
 -- Tests
 -- ejecTotal mPar par
 -- ejecTotal mSuma suma
 -- ejecTotal mLargo largo
--- ejecTotal mIgualdadN IgualdadN
+-- ejecTotal mIgualdadN igualdadN
 -- ejecTotal mFibonacci fibonacci
