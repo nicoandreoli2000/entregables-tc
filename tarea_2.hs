@@ -72,15 +72,13 @@ ejecTotal n t = ejecTotal m p where {
 
 --Ej6
 
+--Numbers
 cero :: Val
 cero = ConstVal "O" []
-
 uno :: Val
 uno = ConstVal "S" [cero]
-
 dos :: Val
 dos = ConstVal "S" [uno]
-
 tres :: Val
 tres = ConstVal "S" [dos]
 
@@ -107,10 +105,23 @@ suma = [
 	Asign [("x", Var "x"),("y", Var "y")],
 	Asign [("suma", Var "x")],
 	While "y" [("S",(["n"], [Asign [("y", Var "n")], Asign [("suma", ConstExp "S" [Var "suma"])]]))]
-		]
+	]
 
--- mLargo :: Mem
--- largo :: Prog
+--Lists
+listaAB :: Val
+listaAB = ConstVal ":" [ConstVal "a" [], ConstVal ":" [ConstVal "b" [], ConstVal ":" []]]
+listaCD :: Val
+listaCD = ConstVal ":" [ConstVal "c" [], ConstVal ":" [ConstVal "d" [], ConstVal ":" []]]
+
+mLargo :: Mem
+mLargo = [("x", listaAB),("y", listaCD)]
+
+largo :: Prog
+largo = [
+	Asign [("x", Var "x"), ("y", Var "y"), ("largo", ConstExp "O" [])],
+	While "x" [(":",(["l","ls"], [Asign [("x", Var "ls")], Asign [("largo", ConstExp "S" [Var "largo"])]]))],
+	While "y" [(":",(["l","ls"], [Asign [("y", Var "ls")], Asign [("largo", ConstExp "S" [Var "largo"])]]))]
+	]
 
 -- mIgualdadN :: Mem
 -- igualdadN :: Prog
