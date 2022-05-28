@@ -91,8 +91,6 @@ listaVacia :: Val
 listaVacia = ConstVal "[]" []
 listaAB :: Val
 listaAB = ConstVal ":" [ConstVal "a" [], ConstVal ":" [ConstVal "b" [], listaVacia]]
-listaCD :: Val
-listaCD = ConstVal ":" [ConstVal "c" [], ConstVal ":" [ConstVal "d" [], listaVacia]]
 
 --Functions
 
@@ -120,17 +118,16 @@ suma = [
 	]
 
 mLargo :: Mem
-mLargo = [("x", listaAB),("y", listaCD)]
+mLargo = [("x", listaAB)]
 
 largo :: Prog
 largo = [
-	Asign [("u", Var "x"), ("v", Var "y"), ("largo", ConstExp "O" [])],
-	While "u" [(":",(["l","ls"], [Asign [("u", Var "ls"), ("largo", ConstExp "S" [Var "largo"])]]))],
-	While "v" [(":",(["l","ls"], [Asign [("v", Var "ls"), ("largo", ConstExp "S" [Var "largo"])]]))]
+	Asign [("u", Var "x"), ("largo", ConstExp "O" [])],
+	While "u" [(":",(["l","ls"], [Asign [("u", Var "ls"), ("largo", ConstExp "S" [Var "largo"])]]))]
 	]
 
 mIgualdadN :: Mem
-mIgualdadN = [("x",uno),("y",uno)]
+mIgualdadN = [("x",cero),("y",uno)]
 
 igualdadN :: Prog
 igualdadN = [
