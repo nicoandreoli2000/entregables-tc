@@ -7,7 +7,7 @@ module Turing where
 --Ej1
 type Symbol = String
 blank :: Symbol
-blank = '#'
+blank = "#"
 type Tape = [Symbol]
 
 --Ej2
@@ -15,9 +15,9 @@ data Action = Left Action | Right Action | Write Symbol Action
                 deriving Show
 type State = String
 init :: State
-init = 'i'
+init = "i"
 halt :: State
-halt = 'h'
+halt = "h"
 type Code = [(State,Symbol,Action,State)]
 
 --Ej3
