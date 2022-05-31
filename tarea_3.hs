@@ -8,10 +8,10 @@ module Turing where
 type Symbol = String
 blank :: Symbol
 blank = "#"
-type Tape = [Symbol]
+type Tape = ([Symbol],Symbol,[Symbol])
 
 --Ej2
-data Action = Left Action | Right Action | Write Symbol Action
+data Action = Left | Right | Write Symbol
                 deriving Show
 type State = String
 init :: State
@@ -24,10 +24,11 @@ type Code = [(State,Symbol,Action,State)]
 type Config = (State,Tape)
 
 --Ej4
--- step::Config->Config
+step::Code->Config->Config
+
 
 --Ej5
--- exec::Code ->Tape->Tape
+-- exec::Code->Tape->Tape
 
 --Ej6
 -- par
