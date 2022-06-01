@@ -58,6 +58,24 @@ exec c t = execWithConfig c (init,t)
 
 
 --Ej6
--- par
+
+par :: Code
+par = [
+        (init,blank,L,"reversa"),
+        ("reversa","I",L,"reversa"),("reversa",blank,R,"par"),
+        ("par","I",R,"impar"),("impar","I",R,"par"),
+        ("par",blank,R,"movPar"),("movPar",blank,L,"T"),
+        ("impar",blank,R,"movImpar"),("movImpar",blank,L,"F"),
+        ("T",blank,O "T","fin"),("F",blank,O "F","fin"),
+        ("fin","T",R,halt),("fin","F",R,halt)
+
+    ]
+
+cintaPar :: Tape
+cintaPar = (["I","I","I","I",blank],blank,[blank,blank])
+
+cintaImpar :: Tape
+cintaImpar = (["I","I","I","I","I",blank],blank,[blank,blank])
+
 -- shift-right
 -- reverse
