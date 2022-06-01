@@ -18,7 +18,7 @@ init :: State
 init = "i"
 halt :: State
 halt = "h"
-type Code = [(State,(Symbol,Action,State))]
+type Code = [(State,Symbol,Action,State)]
 
 --Ej3
 type Config = (State,Tape)
@@ -27,20 +27,24 @@ type Config = (State,Tape)
 err :: String
 err = "error en tiempo de ejecución"
 
+lookupTuring :: State -> Symbol -> Code -> (Action,State)
+lookupTuring q x [] = error err
+lookupTuring q x ((q',x',a,s):cs) = case (q' == q && x' == x) of {
+    True -> (a,s);
+    False -> lookupTuring q x cs;
+}
+
 step :: Code -> Config -> Config
-step c (q,t) = case lookup q c of {
-    Nothing -> error err;
-    Just (x,a,s) -> case a of {
-        L -> error err;
-        R -> error err;
-        O x -> error err;
-    };
+step c (q,(l:ls,x,r:rs)) = case a of {
+    R -> step c (s,(ls,l,x:r:rs));
+    L -> step c (s,(x:l:ls,r,rs));
+    O z -> step c (s,(l:ls,z,r:rs));
+} where {
+    (a,s) = lookupTuring q x c;
 }
 
 --Ej5
 -- exec :: Code -> Tape -> Tape
--- exec [] t = t
--- exec c@((si,a,a,sf):cs) t = step c (si,t)
 
 
 --Ej6
