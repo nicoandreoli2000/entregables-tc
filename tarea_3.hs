@@ -48,8 +48,8 @@ step c (q,t@(l:ls,x,r:rs)) = case q == halt of {
 
 
 --Ej5
--- exec :: Code -> Tape -> Tape
--- exec c t = 
+exec :: Code -> Tape -> Tape
+exec c t = step c (init, t)
 
 
 --Ej6
