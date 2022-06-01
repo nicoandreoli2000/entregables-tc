@@ -35,6 +35,7 @@ lookupTuring q x ((q',x',a,s):cs) = case (q' == q && x' == x) of {
 }
 
 step :: Code -> Config -> Config
+setp c ("h",t) = ("h",t)
 step c (q,(l:ls,x,r:rs)) = case a of {
     R -> step c (s,(ls,l,x:r:rs));
     L -> step c (s,(x:l:ls,r,rs));
@@ -45,6 +46,7 @@ step c (q,(l:ls,x,r:rs)) = case a of {
 
 --Ej5
 -- exec :: Code -> Tape -> Tape
+-- exec c t = 
 
 
 --Ej6
