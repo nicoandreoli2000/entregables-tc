@@ -4,6 +4,8 @@
 
 module Turing where
 
+import Prelude hiding (init)
+
 --Ej1
 type Symbol = String
 blank :: Symbol
@@ -35,21 +37,24 @@ lookupTuring q x ((q',x',a,s):cs) = case (q' == q && x' == x) of {
 }
 
 step :: Code -> Config -> Config
-step c (q,t@(l:ls,x,r:rs)) = case q == halt of {
-    True -> (q,t);
-    False -> case a of {
-        R -> (s,(ls,l,x:r:rs));
-        L -> (s,(x:l:ls,r,rs));
-        O z -> (s,(l:ls,z,r:rs));
-    } where {
+step c (q,(l:ls,x,r:rs)) = case a of {
+    R -> (s,(ls,l,x:r:rs));
+    L -> (s,(x:l:ls,r,rs));
+    O z -> (s,(l:ls,z,r:rs));
+} where {
     (a,s) = lookupTuring q x c;
-    }
 }
 
 
 --Ej5
+execWithConfig :: Code -> Config -> Tape
+execWithConfig code config@(q,t) = case q == halt of {
+    True -> t;
+    False -> execWithConfig code (step code config);
+}
+
 exec :: Code -> Tape -> Tape
-exec c t = step c (init, t)
+exec c t = execWithConfig c (init,t)
 
 
 --Ej6
