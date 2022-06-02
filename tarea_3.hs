@@ -60,8 +60,8 @@ exec c t = execWithConfig c (init,t)
 
 --Ej6
 
-cintaCasoBorde :: Tape
-cintaCasoBorde = ([blank],blank,[blank,blank])
+cintaParCasoBorde :: Tape
+cintaParCasoBorde = ([blank],blank,[blank,blank])
 
 cintaPar :: Tape
 cintaPar = (["I","I","I","I",blank],blank,[blank,blank])
@@ -83,6 +83,9 @@ par = [
         (("fin","T"),(R,halt)),
         (("fin","F"),(R,halt))
     ]
+
+cintaShiftRightCasoBorde :: Tape
+cintaShiftRightCasoBorde = ([blank],blank,[blank])
 
 cintaShiftRight :: Tape
 cintaShiftRight = (["X","Y","X","Y","Z","X","Z",blank],blank,[blank])
@@ -114,5 +117,18 @@ shiftRight = [
         (("fin",blank),(O blank,halt))
     ]
 
+cintaReverseCasoBorde :: Tape
+cintaReverseCasoBorde = ([blank],blank,[blank,blank])
+
+cintaReverse :: Tape
+cintaReverse = ([blank],blank,[blank,blank])
+
+reverse :: Code
+reverse = []
+
+-- Tests
+-- exec par cintaParCasoBorde
+-- exec par cintaPar
+-- exec par cintaImpar
+-- exec shiftRight cintaShiftRightCasoBorde
 -- exec shiftRight cintaShiftRight
--- reverse
