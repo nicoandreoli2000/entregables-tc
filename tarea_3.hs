@@ -125,8 +125,8 @@ cintaReverse = (["X","X","X",blank],blank,[blank,blank,blank,blank,blank])
 
 reverse :: Code
 reverse = [
-        ((init,blank),(L,"reversa")),
-        (("reversa","X"),(O "@","marchaAdelante1X")),
+        ((init,blank),(L,"reversaFinal")),
+        (("reversaFinal","X"),(O "@","marchaAdelante1X")),
         (("marchaAdelante1X","@"),(R,"marchaAdelante1X")),
         (("marchaAdelante1X","X"),(R,"marchaAdelante1X")),
         (("marchaAdelante1X",blank),(R,"marchaAdelante2X")),
@@ -136,7 +136,8 @@ reverse = [
         (("reversa2X",blank),(L,"reversa1X")),
         (("reversa1X","X"),(L,"reversa1X")),
         (("reversa1X","@"),(O "X","reversa")),
-        (("reversa",blank),(R,"fin1")),
+        (("reversa","X"),(L,"reversaFinal")),
+        (("reversaFinal",blank),(R,"fin1")),
         (("fin1","X"),(R,"fin1")),
         (("fin1",blank),(R,"fin2")),
         (("fin2","X"),(R, halt)),
