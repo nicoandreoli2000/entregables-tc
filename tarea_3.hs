@@ -118,7 +118,7 @@ shiftRight = [
     ]
 
 cintaReverseCasoBorde :: Tape
-cintaReverseCasoBorde = ([blank],blank,[blank,blank])
+cintaReverseCasoBorde = ([blank],blank,[blank])
 
 cintaReverse :: Tape
 cintaReverse = (["Y","X","X","Y","Z","Z","X",blank],blank,[blank,blank,blank,blank,blank,blank,blank,blank])
