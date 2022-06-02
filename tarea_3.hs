@@ -60,15 +60,8 @@ exec c t = execWithConfig c (init,t)
 
 --Ej6
 
-par :: Code
-par = [
-        ((init,blank),(L,"reversa")),
-        (("reversa","I"),(L,"reversa")),(("reversa",blank),(R,"par")),
-        (("par","I"),(R,"impar")),(("impar","I"),(R,"par")),
-        (("par",blank),(R,"T")),(("T",blank),(O "T","fin")),
-        (("impar",blank),(R,"F")),(("F",blank),(O "F","fin")),
-        (("fin","T"),(R,halt)),(("fin","F"),(R,halt))
-    ]
+cintaCasoBorde :: Tape
+cintaCasoBorde = ([blank],blank,[blank,blank])
 
 cintaPar :: Tape
 cintaPar = (["I","I","I","I",blank],blank,[blank,blank])
@@ -76,5 +69,50 @@ cintaPar = (["I","I","I","I",blank],blank,[blank,blank])
 cintaImpar :: Tape
 cintaImpar = (["I","I","I","I","I",blank],blank,[blank,blank])
 
--- shift-right
+par :: Code
+par = [
+        ((init,blank),(L,"reversa")),
+        (("reversa","I"),(L,"reversa")),
+        (("reversa",blank),(R,"par")),
+        (("par","I"),(R,"impar")),
+        (("impar","I"),(R,"par")),
+        (("par",blank),(R,"T")),
+        (("T",blank),(O "T","fin")),
+        (("impar",blank),(R,"F")),
+        (("F",blank),(O "F","fin")),
+        (("fin","T"),(R,halt)),
+        (("fin","F"),(R,halt))
+    ]
+
+cintaShiftRight :: Tape
+cintaShiftRight = (["X","Y","X","Y","Z","X","Z",blank],blank,[blank])
+
+shiftRight :: Code
+shiftRight = [
+        ((init,blank),(L,"reversa")),
+        (("reversa","X"),(O blank, "limpiarX")),
+        (("reversa","Y"),(O blank, "limpiarY")),
+        (("reversa","Z"),(O blank, "limpiarZ")),
+        (("limpiarX",blank),(R, "escribirX")),
+        (("limpiarY",blank),(R, "escribirY")),
+        (("limpiarZ",blank),(R, "escribirZ")),
+        (("escribirX","X"),(R, "escribirX")),
+        (("escribirY","Y"),(R, "escribirY")),
+        (("escribirZ","Z"),(R, "escribirZ")),
+        (("escribirX",blank),(O "X", "vuelta")),
+        (("escribirY",blank),(O "Y", "vuelta")),
+        (("escribirZ",blank),(O "Z", "vuelta")),
+        (("vuelta","X"),(L,"vuelta")),
+        (("vuelta","Y"),(L,"vuelta")),
+        (("vuelta","Z"),(L,"vuelta")),
+        (("vuelta",blank),(L,"reversa")),
+        (("reversa",blank),(R,"ultimo")),
+        (("ultimo",blank),(R,"fin")),
+        (("fin","X"),(R,"fin")),
+        (("fin","Y"),(R,"fin")),
+        (("fin","Z"),(R,"fin")),
+        (("fin",blank),(O blank,halt))
+    ]
+
+-- exec shiftRight cintaShiftRight
 -- reverse
