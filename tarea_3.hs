@@ -4,7 +4,7 @@
 
 module Turing where
 
-import Prelude hiding (init)
+import Prelude hiding (init,reverse)
 
 --Ej1
 type Symbol = String
@@ -121,10 +121,27 @@ cintaReverseCasoBorde :: Tape
 cintaReverseCasoBorde = ([blank],blank,[blank,blank])
 
 cintaReverse :: Tape
-cintaReverse = ([blank],blank,[blank,blank])
+cintaReverse = (["X","X","X",blank],blank,[blank,blank,blank,blank,blank])
 
 reverse :: Code
-reverse = []
+reverse = [
+        ((init,blank),(L,"reversa")),
+        (("reversa","X"),(O "@","marchaAdelante1X")),
+        (("marchaAdelante1X","@"),(R,"marchaAdelante1X")),
+        (("marchaAdelante1X","X"),(R,"marchaAdelante1X")),
+        (("marchaAdelante1X",blank),(R,"marchaAdelante2X")),
+        (("marchaAdelante2X","X"),(R,"marchaAdelante2X")),
+        (("marchaAdelante2X",blank),(O "X","reversa2X")),
+        (("reversa2X","X"),(L,"reversa2X")),
+        (("reversa2X",blank),(L,"reversa1X")),
+        (("reversa1X","X"),(L,"reversa1X")),
+        (("reversa1X","@"),(O "X","reversa")),
+        (("reversa",blank),(R,"fin1")),
+        (("fin1","X"),(R,"fin1")),
+        (("fin1",blank),(R,"fin2")),
+        (("fin2","X"),(R, halt)),
+        (("fin2",blank),(O blank, halt))
+    ]
 
 -- Tests
 -- exec par cintaParCasoBorde
@@ -132,3 +149,5 @@ reverse = []
 -- exec par cintaImpar
 -- exec shiftRight cintaShiftRightCasoBorde
 -- exec shiftRight cintaShiftRight
+-- exec reverse cintaReverseCasoBorde
+-- exec reverse cintaReverse
