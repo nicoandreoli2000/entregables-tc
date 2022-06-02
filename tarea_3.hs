@@ -20,7 +20,7 @@ init :: State
 init = "i"
 halt :: State
 halt = "h"
-type Code = [(State,Symbol,Action,State)]
+type Code = [((State,Symbol),(Action,State))]
 
 --Ej3
 type Config = (State,Tape)
@@ -29,22 +29,23 @@ type Config = (State,Tape)
 err :: String
 err = "error en tiempo de ejecución"
 
-lookupTuring :: State -> Symbol -> Code -> (Action,State)
-lookupTuring q x [] = error err
-lookupTuring q x ((q',x',a,s):cs) = case (q' == q && x' == x) of {
-    True -> (a,s);
-    False -> lookupTuring q x cs;
-}
-
 step :: Code -> Config -> Config
-step c (q,(l:ls,x,r:rs)) = case a of {
-    R -> (s,(ls,l,x:r:rs));
-    L -> (s,(x:l:ls,r,rs));
-    O z -> (s,(l:ls,z,r:rs));
-} where {
-    (a,s) = lookupTuring q x c;
+step c (q,t@(l,x,r)) = case lookup (q,x) c of {
+    Just (a,s) -> case a of {
+        L -> (s, movLeft t);
+        R -> (s, movRight t);
+        O z -> (s,(l,z,r));
+    };
+    Nothing -> error err;
 }
 
+movLeft :: Tape -> Tape
+movLeft ([],x,r) = error err
+movLeft (l:ls,x,r) = (ls,l,x:r)
+
+movRight :: Tape -> Tape
+movRight (l,x,[]) = error err
+movRight (l,x,r:rs) = (x:l,r,rs)
 
 --Ej5
 execWithConfig :: Code -> Config -> Tape
@@ -61,14 +62,12 @@ exec c t = execWithConfig c (init,t)
 
 par :: Code
 par = [
-        (init,blank,L,"reversa"),
-        ("reversa","I",L,"reversa"),("reversa",blank,R,"par"),
-        ("par","I",R,"impar"),("impar","I",R,"par"),
-        ("par",blank,R,"movPar"),("movPar",blank,L,"T"),
-        ("impar",blank,R,"movImpar"),("movImpar",blank,L,"F"),
-        ("T",blank,O "T","fin"),("F",blank,O "F","fin"),
-        ("fin","T",R,halt),("fin","F",R,halt)
-
+        ((init,blank),(L,"reversa")),
+        (("reversa","I"),(L,"reversa")),(("reversa",blank),(R,"par")),
+        (("par","I"),(R,"impar")),(("impar","I"),(R,"par")),
+        (("par",blank),(R,"T")),(("T",blank),(O "T","fin")),
+        (("impar",blank),(R,"F")),(("F",blank),(O "F","fin")),
+        (("fin","T"),(R,halt)),(("fin","F"),(R,halt))
     ]
 
 cintaPar :: Tape
